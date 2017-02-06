@@ -4,6 +4,14 @@ from azureJob import AzureJob
 class CompasJob(AzureJob):
 
     @property
+    def id(self):
+        """A unique identifier for the job, used when creating unique names etc
+        
+        """
+        
+        return self._id
+
+    @property
     def compasCommand(self):
         """The string of the command line call to COMPAS for this particular job
         
@@ -27,10 +35,11 @@ class CompasJob(AzureJob):
         
         return self._compasPath
 
-    def initialise(self, compasCommand, outputPath, compasPath):
+    def initialise(self, ID, compasCommand, outputPath, compasPath):
     
         # add an extra command to make a text file when COMPAS finishes
-        self._compasCommand = compasCommand + '; echo completed >> completed.txt;' 
+        self._id = ID
+        self._compasCommand = compasCommand  
         self._outputPath = outputPath
         self._compasPath = compasPath
         
@@ -40,16 +49,26 @@ class CompasJob(AzureJob):
         
         self._vm.uploadFile(self._compasPath)
         
-        #a short python script which gets run directly by bash
-        command = " python -c '"
-        command += "import subprocess;"
-        command += "subprocess.Popen([" + self._compasCommand + "],"
-        command += "stdin=None, stdout=None, stderr=None, close_fds=True)"
-        command += "'"
+        bashFileName = 'bashFile' + str(self._id) + '.bash'
+        f = open(bashFileName,'w')
+        f.write(self._compasCommand)
+        f.write(" &>/dev/null\n")
+        f.write("echo completed >> completed.txt\n")
+        f.close()
         
-        print command
+        self._vm.uploadFile(bashFileName)
+        self._vm.sendCommand("chmod 744 " + bashFileName)
         
-        self._vm.sendCommand(command)
+        pythonFileName = 'pythonFile' + str(self._id) + '.py'
+        f = open(pythonFileName,'w')
+        f.write("import subprocess\n")
+        f.write("subprocess.Popen([\"bash\",\"" + bashFileName + "\"],")
+        f.write("stdin=None, stdout=None, stderr=None, close_fds=True)\n")
+        f.close() 
+        
+        self._vm.uploadFile(pythonFileName)
+
+        self._vm.sendCommand('python ' + pythonFileName)
         
     def checkCompleted(self):
         """check if the 'completed.txt exists and contains the word completed

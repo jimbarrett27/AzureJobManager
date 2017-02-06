@@ -124,7 +124,7 @@ class VirtualMachine(object):
         
     def uploadFile(self,filePath, remoteDestination='.'):
     
-        command = 'scp ' + filePath + ' ' + self.getSSHAddress() + ':' + remoteDestination
+        command = 'scp -o \'StrictHostKeyChecking no\' ' + filePath + ' ' + self.getSSHAddress() + ':' + remoteDestination
         
         self.verbosePrint('copying file with command ' + command)
         
@@ -132,20 +132,25 @@ class VirtualMachine(object):
         
     def getFile(self,remotePath, localDestination = '.'):
     
-        command = 'scp ' + self.getSSHAddress() + ':' + remotePath + ' ' + localDestination
+        command = 'scp -o \'StrictHostKeyChecking no\' ' + self.getSSHAddress() + ':' + remotePath + ' ' + localDestination
         
         self.verbosePrint('copying file with command ' + command)
         
         sp.call(command, shell=True)
         
-    def sendCommand(self,command):
+    def sendCommand(self,command,waitToComplete=True):
     
-        fullCommand = "ssh " + self.getSSHAddress() + " \"" + command + "\""
+        fullCommand = "ssh -o \'StrictHostKeyChecking no\' " + self.getSSHAddress() + " \'" + command + "\'"
+#        fullCommand = ["ssh", "-o","\'StrictHostKeyChecking no\'", self.getSSHAddress(),"\'" + command + "\'"]
         
-        self.verbosePrint('sending command via the full command ' + fullCommand)
+        self.verbosePrint('sending command via the full command ')
+        self.verbosePrint(fullCommand)
         
-        sp.call(fullCommand,shell=True)
-        
+        p = sp.Popen(fullCommand,stdin=None, stdout=None, stderr=None, close_fds=True,shell=True)
+        if waitToComplete:
+            p.wait()
+            
+        print "completed..."
         
     def clean(self):
     

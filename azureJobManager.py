@@ -180,6 +180,8 @@ class AzureJobManager(object):
         for vm in availableVms:
         
             vm.clean()
+            
+        for vm in availableVms:
 
             if len(self._idleJobs) == 0:
                 
