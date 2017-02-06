@@ -68,7 +68,7 @@ class CompasJob(AzureJob):
         
         self._vm.uploadFile(pythonFileName)
 
-        self._vm.sendCommand('python ' + pythonFileName)
+        self._vm.sendCommand('python ' + pythonFileName,waitToComplete=False)
         
     def checkCompleted(self):
         """check if the 'completed.txt exists and contains the word completed
