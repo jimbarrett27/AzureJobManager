@@ -1,6 +1,7 @@
 from CompasAzure import prepareCommands
 from azureJobManager import AzureJobManager
 from compasJob import CompasJob
+import os
 
 commands = prepareCommands()
 
