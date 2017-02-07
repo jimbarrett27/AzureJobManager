@@ -12,16 +12,17 @@
     
     <table style="width:100%">
     <tr>
-    <th>Firstname</th>
-    <th>Lastname</th> 
-    <th>Age</th>
+    <th>Job ID</th>
+    <th>Status</th> 
+    <th>VM IP</th>
+    <th>Output Path</th>
     </tr>
 	{% for jobId, jobStatus, jobVm, jobOutputPath in runStatus %}
 	<tr>
-    <td>jobId</td>
-    <td>jobStatus</td>
-    <td>jobVm</td>
-    <td>jobOutputPath</td>
+    <td>{{ jobId }}</td>
+    <td>{{ jobStatus }}</td>
+    <td>{{ jobVm }}</td>
+    <td>{{ jobOutputPath }}</td>
     </tr>
 	{% endfor %}
     </table>
