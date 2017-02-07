@@ -3,7 +3,7 @@ import numpy as np
 from virtualMachine import VirtualMachine
 import warnings
 import time
-
+import jinja2 as jj2
 
 class AzureJobManager(object):
 
@@ -89,9 +89,6 @@ class AzureJobManager(object):
         self._verbose = verbose
         self._sleepTime = sleepTime
         self._htmlPath = htmlPath
-        
-        if not htmlPath == None:
-            import jinja2 as jj2
         
         self._virtualMachines = []
         self._idleJobs = jobs
@@ -273,7 +270,7 @@ class AzureJobManager(object):
         
         templateVars = {
             "title" : "jobs running under resource group " + self._resourceGroupName,
-            "pagetitle" : "jobs running under resource group " + self._resourceGroupName
+            "pagetitle" : "jobs running under resource group " + self._resourceGroupName,
             "runStatus" : runStatus
         }
         
