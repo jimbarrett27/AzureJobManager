@@ -269,15 +269,15 @@ class AzureJobManager(object):
             
         
         env = jj2.Environment(loader=jj2.FileSystemLoader('.'))
-		template = env.get_template('progressMonitorTemplate.html')
-		
-		templateVars = {
-		    "title" : "jobs running under resource group " + self._resourceGroupName,
-		    "pagetitle" : "jobs running under resource group " + self._resourceGroupName
-		    "runStatus" : runStatus
-		}
-		
-		html = template.render(templateVars)
-		htmlFile = open(self._htmlPath + '/AzureStatus-'+self._resourceGroupName+'.html', 'w')
-		htmlFile.write(html)
-		htmlFile.close()
+        template = env.get_template('progressMonitorTemplate.html')
+        
+        templateVars = {
+            "title" : "jobs running under resource group " + self._resourceGroupName,
+            "pagetitle" : "jobs running under resource group " + self._resourceGroupName
+            "runStatus" : runStatus
+        }
+        
+        html = template.render(templateVars)
+        htmlFile = open(self._htmlPath + '/AzureStatus-'+self._resourceGroupName+'.html', 'w')
+        htmlFile.write(html)
+        htmlFile.close()
