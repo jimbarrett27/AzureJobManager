@@ -16,7 +16,7 @@ gridDictionary['--common-envelope-alpha'] = np.linspace(0.,2.,3)
 initialSeed = 1234567
 np.random.seed(initialSeed)
 
-shareSeeds = True
+shareSeeds = False
 
 def prepareCommands():
 

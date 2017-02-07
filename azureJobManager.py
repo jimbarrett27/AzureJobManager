@@ -167,6 +167,10 @@ class AzureJobManager(object):
         before replacing them with one from the idle queue
         
         """
+
+        if not self._htmlPath == None:
+
+            self.updateHtml()
         
         remainingActiveJobs = []
         availableVms = []
@@ -200,10 +204,6 @@ class AzureJobManager(object):
                 self._activeJobs.append(self._idleJobs[0])
                 self._idleJobs[0].activate(vm)
                 self._idleJobs = self._idleJobs[1:]
-                
-        if not self._htmlPath == None:
-        
-            self.updateHtml()
             
     def cleanUp(self):
         """Cleans up everything: currently simply deletes the resource group

@@ -1,3 +1,8 @@
+import sys
+sys.path.remove ('/net/lnx0/export/local/debian/lib/python2.7/dist-packages')
+sys.path.remove ('/usr/local/lib/python2.7/dist-packages')
+
+
 from CompasAzure import prepareCommands
 from azureJobManager import AzureJobManager
 from compasJob import CompasJob
@@ -8,7 +13,7 @@ commands = prepareCommands()
 jobs = []
 for i,command in enumerate(commands):
 
-    dirname = './output'+str(i)
+    dirname = '/data0/jbarrett/output'+str(i)
     
     os.makedirs(dirname)
 
@@ -16,7 +21,7 @@ for i,command in enumerate(commands):
     j.initialise(i,command,dirname,'/home/jbarrett/AzureJobManager/COMPAS')
     jobs.append(j)
 
-ajm = AzureJobManager('qwerty1234567',3,jobs,verbose=True,sleepTime=10,htmlPath = '/home/jbarrett/public_html')
+ajm = AzureJobManager('finalHtmlTest',1,jobs,verbose=True,sleepTime=30,htmlPath = '/home/jbarrett/www_html')
 
 ajm.run()
 
