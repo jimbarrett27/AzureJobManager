@@ -70,17 +70,28 @@ class AzureJobManager(object):
         """
         
         return self._sleepTime
+    
+    @property    
+    def htmlPath(self):
+        """The path to the generated HTML page displaying progress
         
+        """
+        
+        return self._htmlPath
         
 
     def __init__(self, resourceGroupName, nVirtualMachines, jobs, sshKeyPath = '~/.ssh/id_rsa.pub', verbose = False, \
-                sleepTime = 300):
+                sleepTime = 300, htmlPath = None):
     
         
         self._resourceGroupName = resourceGroupName
         self._publicSSHKeyPath = sshKeyPath
         self._verbose = verbose
         self._sleepTime = sleepTime
+        self._htmlPath = htmlPath
+        
+        if not htmlPath == None:
+            import jinja2 as jj2
         
         self._virtualMachines = []
         self._idleJobs = jobs
@@ -176,6 +187,10 @@ class AzureJobManager(object):
                 remainingActiveJobs.append(jobToCheck)
                 
         self._activeJobs = remainingActiveJobs
+        
+        if not self._htmlPath == None:
+        
+            self.updateHtml()
 
         for vm in availableVms:
         
@@ -220,3 +235,49 @@ class AzureJobManager(object):
          
         if self._verbose:
             print message
+            
+    def updateHtml(self):
+    
+        runStatus = []
+    
+        for iJob in self._idleJobs:
+        
+            jobId = str(iJob._id)
+            jobStatus = "Job Inactive"
+            jobVm = 'None'
+            jobOutputPath = iJob._outputPath
+            
+            runStatus.append((jobId,jobStatus,jobVm,jobOutputPath))
+    
+        for aJob in self._activeJobs:
+        
+            jobId = str(aJob._id)
+            jobStatus = aJob.getStatusMessage()
+            jobVm = aJob._vm._ipAddress
+            jobOutputPath = aJob._outputPath
+            
+            runStatus.append((jobId,jobStatus,jobVm,jobOutputPath))
+            
+        for cJob in self._completedJobs:
+            
+            jobId =  str(cJob._id)
+            jobStatus = "job completed"
+            jobVm = 'None'
+            jobOutputPath = cJob._outputPath
+            
+            runStatus.append((jobId,jobStatus,jobVm,jobOutputPath))
+            
+        
+        env = jj2.Environment(loader=jj2.FileSystemLoader('.'))
+		template = env.get_template('progressMonitorTemplate.html')
+		
+		templateVars = {
+		    "title" : "jobs running under resource group " + self._resourceGroupName,
+		    "pagetitle" : "jobs running under resource group " + self._resourceGroupName
+		    "runStatus" : runStatus
+		}
+		
+		html = template.render(templateVars)
+		htmlFile = open(self._htmlPath + '/AzureStatus-'+self._resourceGroupName+'.html', 'w')
+		htmlFile.write(html)
+		htmlFile.close()

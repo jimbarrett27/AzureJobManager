@@ -96,9 +96,13 @@ class CompasJob(AzureJob):
        self._vm.getFile('~/mergingParameters.txt', self._outputPath)
        self._vm.getFile('~/formationHistory.txt', self._outputPath)
        
-       
-        
+    def getStatusMessage(self):
     
+        op = self._vm.getOutputFromCommand('wc -l initialParameters.txt')
+        
+        nBinsSimulated = str(op.split(' ')[0])
+        
+        return 'simulated ' + nBinsSimulated + ' binaries'
          
         
         

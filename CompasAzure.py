@@ -3,7 +3,7 @@ import itertools
 import os
 
 nBinariesPerGridPoint = 100
-nBinariesPerTask = 100
+nBinariesPerTask = 25
 
 assert nBinariesPerTask <= nBinariesPerGridPoint
 assert nBinariesPerGridPoint % nBinariesPerTask == 0

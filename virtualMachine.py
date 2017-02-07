@@ -152,6 +152,12 @@ class VirtualMachine(object):
             
         print "completed..."
         
+    def getOutputFromCommand(self,command):
+    
+        fullCommand = "ssh -o \'StrictHostKeyChecking no\' " + self.getSSHAddress() + " \'" + command + "\'"
+        
+        return sp.check_output(fullCommand,shell=True)
+        
     def clean(self):
     
         command = 'rm -r ~/*'

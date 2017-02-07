@@ -16,7 +16,7 @@ for i,command in enumerate(commands):
     j.initialise(i,command,dirname,'/home/jbarrett/AzureJobManager/COMPAS')
     jobs.append(j)
 
-ajm = AzureJobManager('qwerty1234567',3,jobs,verbose=True,sleepTime=30)
+ajm = AzureJobManager('qwerty1234567',3,jobs,verbose=True,sleepTime=10,htmlPath = '/home/jbarrett/public_html')
 
 ajm.run()
 

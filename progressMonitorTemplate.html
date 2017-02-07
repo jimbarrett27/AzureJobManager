@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ title }}</title>
+</head>
+
+<body>
+
+	<h1>{{ pagetitle }} </h1>
+    
+    
+    <table style="width:100%">
+    <tr>
+    <th>Firstname</th>
+    <th>Lastname</th> 
+    <th>Age</th>
+    </tr>
+	{% for jobId, jobStatus, jobVm, jobOutputPath in runStatus %}
+	<tr>
+    <td>jobId</td>
+    <td>jobStatus</td>
+    <td>jobVm</td>
+    <td>jobOutputPath</td>
+    </tr>
+	{% endfor %}
+    </table>
+
+</body>
+</html>
