@@ -100,7 +100,7 @@ class CompasJob(AzureJob):
     
         op = self._vm.getOutputFromCommand('wc -l initialParameters.txt')
         
-        nBinsSimulated = str(op.split(' ')[0] - 2)
+        nBinsSimulated = str(op.split(' ')[0])
         
         return 'simulated ' + nBinsSimulated + ' binaries'
          
