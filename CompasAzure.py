@@ -39,140 +39,140 @@ def specifyCommandLineOptions():
     output = os.getcwd()
     
     #-- set inidividual system parameters
-	single_star = False
-	individual_system = False
-	individual_initial_primary_mass = 96.2
-	individual_initial_secondary_mass = 60.2
-	individual_initial_primary_metallicity = 0.0006
-	individual_initial_secondary_metallicity = 0.0006
-	individual_initial_primary_type = 1
-	individual_initial_secondary_type = 1
-	individual_initial_primary_rotational_velocity = 0.0
-	individual_initial_secondary_rotational_velocity = 0.0
-	individual_initial_orbital_separation = 11.5
-	individual_initial_orbital_period = -1
-	individual_initial_orbital_eccentricity = 0.0
-	individual_initial_primary_core_mass = 0
-	individual_initial_secondary_core_mass = 0
-	individual_effective_initial_primary_mass = 0
-	individual_effective_initial_secondary_mass = 0
-	individual_initial_primary_age = 0
-	individual_initial_secondary_age = 0
+    single_star = False
+    individual_system = False
+    individual_initial_primary_mass = 96.2
+    individual_initial_secondary_mass = 60.2
+    individual_initial_primary_metallicity = 0.0006
+    individual_initial_secondary_metallicity = 0.0006
+    individual_initial_primary_type = 1
+    individual_initial_secondary_type = 1
+    individual_initial_primary_rotational_velocity = 0.0
+    individual_initial_secondary_rotational_velocity = 0.0
+    individual_initial_orbital_separation = 11.5
+    individual_initial_orbital_period = -1
+    individual_initial_orbital_eccentricity = 0.0
+    individual_initial_primary_core_mass = 0
+    individual_initial_secondary_core_mass = 0
+    individual_effective_initial_primary_mass = 0
+    individual_effective_initial_secondary_mass = 0
+    individual_initial_primary_age = 0
+    individual_initial_secondary_age = 0
 
 
-	use_mass_loss = True
-	mass_transfer = True
-	post_newtonian_evolution = False
-	detailed_output = False
-	only_double_compact_objects = False
-	lambda_calculation_every_timestep = False
+    use_mass_loss = True
+    mass_transfer = True
+    post_newtonian_evolution = False
+    detailed_output = False
+    only_double_compact_objects = False
+    lambda_calculation_every_timestep = False
 
-	metallicity = 0.002
+    metallicity = 0.002
 
-	common_envelope_alpha = 1.0
-	common_envelope_lambda = 0.1 #1.0 # default was 0.1
-	common_envelope_hertzsprung_gap_assumption = 'PESSIMISTIC_HG_CE' #'OPTIMISTIC_HG_CE'
-	common_envelope_lambda_prescription = 'LAMBDA_FIXED'
-	common_envelope_slope_Kruckow = -2.0/3.0
-	common_envelope_zeta_prescription = 'STARTRACK'
+    common_envelope_alpha = 1.0
+    common_envelope_lambda = 0.1 #1.0 # default was 0.1
+    common_envelope_hertzsprung_gap_assumption = 'PESSIMISTIC_HG_CE' #'OPTIMISTIC_HG_CE'
+    common_envelope_lambda_prescription = 'LAMBDA_FIXED'
+    common_envelope_slope_Kruckow = -2.0/3.0
+    common_envelope_zeta_prescription = 'STARTRACK'
 
-	tides_prescription = 'NONE'
-	mass_loss_prescription = 'VINK'
-	luminous_blue_variable_multiplier = 1.5 #10.0 #1.5 #10.0
-	wolf_rayet_multiplier = 1.0
+    tides_prescription = 'NONE'
+    mass_loss_prescription = 'VINK'
+    luminous_blue_variable_multiplier = 1.5 #10.0 #1.5 #10.0
+    wolf_rayet_multiplier = 1.0
 
-	circularise_binary_during_mass_transfer = False
-	mass_transfer_prescription = 'DEMINK'
-	mass_transfer_angular_momentum_loss_prescription = 'ISOTROPIC' #'ARBITRARY' #
-	mass_transfer_accretion_efficiency_prescription = 'THERMAL' #'FIXED' #
-	mass_transfer_fa = 0.5
-	mass_transfer_jloss = 1.0
-	mass_transfer_rejuvenation_prescription = 'STARTRACK'
-	mass_transfer_thermal_limit_accretor= 'CFACTOR'
-	mass_transfer_thermal_limit_C= 10.0
+    circularise_binary_during_mass_transfer = False
+    mass_transfer_prescription = 'DEMINK'
+    mass_transfer_angular_momentum_loss_prescription = 'ISOTROPIC' #'ARBITRARY' #
+    mass_transfer_accretion_efficiency_prescription = 'THERMAL' #'FIXED' #
+    mass_transfer_fa = 0.5
+    mass_transfer_jloss = 1.0
+    mass_transfer_rejuvenation_prescription = 'STARTRACK'
+    mass_transfer_thermal_limit_accretor= 'CFACTOR'
+    mass_transfer_thermal_limit_C= 10.0
 
-	#-- Critical mass ratios for MT. 0.0 for always stable, < 0.0 to disable
-	critical_mass_ratio_MS_non_degenerate_accretor = 0.65
-	critical_mass_ratio_MS_degenerate_accretor = 0.0
-	critical_mass_ratio_HG_non_degenerate_accretor = -1.0 #0.40
-	critical_mass_ratio_HG_degenerate_accretor = -1.0 #0.21
-	critical_mass_ratio_giant_non_degenerate_accretor = -1.0 #0.0
-	critical_mass_ratio_giant_degenerate_accretor = -1.0 #0.87
-	critical_mass_ratio_helium_giant_non_degenerate_accretor = -1.0 #1.28
-	critical_mass_ratio_helium_giant_degenerate_accretor = -1.0 #0.87
+    #-- Critical mass ratios for MT. 0.0 for always stable, < 0.0 to disable
+    critical_mass_ratio_MS_non_degenerate_accretor = 0.65
+    critical_mass_ratio_MS_degenerate_accretor = 0.0
+    critical_mass_ratio_HG_non_degenerate_accretor = -1.0 #0.40
+    critical_mass_ratio_HG_degenerate_accretor = -1.0 #0.21
+    critical_mass_ratio_giant_non_degenerate_accretor = -1.0 #0.0
+    critical_mass_ratio_giant_degenerate_accretor = -1.0 #0.87
+    critical_mass_ratio_helium_giant_non_degenerate_accretor = -1.0 #1.28
+    critical_mass_ratio_helium_giant_degenerate_accretor = -1.0 #0.87
 
-	#-- X-Ray Binaries (HMXB and ULX) flags and values
-	useXRayBinaries = False
-	x_ray_binary_rlof_factor = 0.5
-	detailed_output_XRayBinaries = False
+    #-- X-Ray Binaries (HMXB and ULX) flags and values
+    useXRayBinaries = False
+    x_ray_binary_rlof_factor = 0.5
+    detailed_output_XRayBinaries = False
 
-	maximum_evolution_time = 13700.0
-	maximum_number_iterations = 99999
+    maximum_evolution_time = 13700.0
+    maximum_number_iterations = 99999
 
-	initial_mass_function = 'KROUPA'
-	initial_mass_min = 7.0
-	initial_mass_max = 100.0
+    initial_mass_function = 'KROUPA'
+    initial_mass_min = 7.0
+    initial_mass_max = 100.0
 
-	initial_mass_power = 0.0
+    initial_mass_power = 0.0
 
-	semi_major_axis_distribution = 'FLATINLOG'
-	semi_major_axis_min = 0.1
-	semi_major_axis_max = 1000.0
+    semi_major_axis_distribution = 'FLATINLOG'
+    semi_major_axis_min = 0.1
+    semi_major_axis_max = 1000.0
 
-	spin_distribution = 'ZERO'
-	spin_assumption = 'BOTHALIGNED'
-	spin_mag_min = 0.0
-	spin_mag_max = 1.0
+    spin_distribution = 'ZERO'
+    spin_assumption = 'BOTHALIGNED'
+    spin_mag_min = 0.0
+    spin_mag_max = 1.0
 
-	mass_ratio_distribution = 'FLAT'
-	mass_ratio_min = 0.0
-	mass_ratio_max = 1.0
+    mass_ratio_distribution = 'FLAT'
+    mass_ratio_min = 0.0
+    mass_ratio_max = 1.0
 
-	eccentricity_distribution = 'ZERO'
-	eccentricity_min = 0.0
-	eccentricity_max = 1.0
+    eccentricity_distribution = 'ZERO'
+    eccentricity_min = 0.0
+    eccentricity_max = 1.0
 
-	rotational_velocity_distribution = 'ZERO'
+    rotational_velocity_distribution = 'ZERO'
 
-	orbital_period_min = 1.1
-	orbital_period_max = 1000
+    orbital_period_min = 1.1
+    orbital_period_max = 1000
 
-	sample_kick_velocity_sigma = False
-	sample_kick_velocity_sigma_min = 0.0
-	sample_kick_velocity_sigma_max = 400.0
+    sample_kick_velocity_sigma = False
+    sample_kick_velocity_sigma_min = 0.0
+    sample_kick_velocity_sigma_max = 400.0
 
-	sample_kick_direction_power = False
-	sample_kick_direction_power_min = -10.0
-	sample_kick_direction_power_max = 10.0
+    sample_kick_direction_power = False
+    sample_kick_direction_power_min = -10.0
+    sample_kick_direction_power_max = 10.0
 
-	sample_common_envelope_alpha = False
-	sample_common_envelope_alpha_min = 0.0
-	sample_common_envelope_alpha_max = 5.0
+    sample_common_envelope_alpha = False
+    sample_common_envelope_alpha_min = 0.0
+    sample_common_envelope_alpha_max = 5.0
 
-	sample_wolf_rayet_multiplier = False
-	sample_wolf_rayet_multiplier_min = 0.0
-	sample_wolf_rayet_multiplier_max = 10.0
+    sample_wolf_rayet_multiplier = False
+    sample_wolf_rayet_multiplier_min = 0.0
+    sample_wolf_rayet_multiplier_max = 10.0
 
-	sample_luminous_blue_variable_multiplier = False
-	sample_luminous_blue_variable_multiplier_min = 0.0
-	sample_luminous_blue_variable_multiplier_max = 10.0
+    sample_luminous_blue_variable_multiplier = False
+    sample_luminous_blue_variable_multiplier_min = 0.0
+    sample_luminous_blue_variable_multiplier_max = 10.0
 
-	remnant_mass_prescription = 'FRYER2012'
-	fryer_supernova_engine = 'DELAYED' #'RAPID' #'DELAYED'
-	black_hole_kicks = 'FALLBACK'
-	kick_velocity_distribution = 'MAXWELLIAN'
-	kick_velocity_sigma = 250
-	fix_dimensionless_kick_velocity = -1
-	kick_direction = 'ISOTROPIC'
-	kick_direction_power = 0.0
+    remnant_mass_prescription = 'FRYER2012'
+    fryer_supernova_engine = 'DELAYED' #'RAPID' #'DELAYED'
+    black_hole_kicks = 'FALLBACK'
+    kick_velocity_distribution = 'MAXWELLIAN'
+    kick_velocity_sigma = 250
+    fix_dimensionless_kick_velocity = -1
+    kick_direction = 'ISOTROPIC'
+    kick_direction_power = 0.0
 
-	pair_instability_supernovae = False
-	PISN_lower_limit = 130.0
-	PISN_upper_limit = 250.0
+    pair_instability_supernovae = False
+    PISN_lower_limit = 130.0
+    PISN_upper_limit = 250.0
 
-	pulsation_pair_instability = False
-	PPI_lower_limit = 100.0
-	PPI_upper_limit = 130.0
+    pulsation_pair_instability = False
+    PPI_lower_limit = 100.0
+    PPI_upper_limit = 130.0
 
     booleanChoices  =  [debugging,single_star,individual_system,use_mass_loss,mass_transfer,post_newtonian_evolution,detailed_output,only_double_compact_objects,
                         sample_kick_velocity_sigma,sample_kick_direction_power,sample_common_envelope_alpha,sample_wolf_rayet_multiplier,
