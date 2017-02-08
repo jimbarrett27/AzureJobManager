@@ -13,7 +13,7 @@ commands = prepareCommands()
 jobs = []
 for i,command in enumerate(commands):
 
-    dirname = '/data0/jbarrett/output'+str(i)
+    dirname = '/data0/jbarrett/central/output'+str(i)
     
     os.makedirs(dirname)
 
@@ -21,7 +21,7 @@ for i,command in enumerate(commands):
     j.initialise(i,command,dirname,'/home/jbarrett/AzureJobManager/COMPAS')
     jobs.append(j)
 
-ajm = AzureJobManager('finalHtmlTest',1,jobs,verbose=True,sleepTime=30,htmlPath = '/home/jbarrett/www_html')
+ajm = AzureJobManager('lbvSigmaAlphaCentral',20,jobs,verbose=True,sleepTime=300,htmlPath = '/home/jbarrett/www_html')
 
 ajm.run()
 
