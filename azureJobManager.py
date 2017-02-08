@@ -142,9 +142,16 @@ class AzureJobManager(object):
         assert self._nJobs >= len(self._virtualMachines)
         
         #initally launch the virtual machines, putting one job on each of them
-        for vm in self._virtualMachines:
+        for i,vm in enumerate(self._virtualMachines):
             
-            vm.launch()
+            try:
+                vm.launch()
+            except:
+                print "there was an error launching one of the VMs. we may have hit a usage limit..."
+                print "making do with the ones already launched"
+                self._virtualMachines = self._virtualMachines[:i]
+                break
+                
             self._activeJobs.append(self._idleJobs[0])
             self._idleJobs[0].activate(vm)
             self._idleJobs = self._idleJobs[1:]
@@ -249,7 +256,10 @@ class AzureJobManager(object):
         for aJob in self._activeJobs:
         
             jobId = str(aJob._id)
-            jobStatus = aJob.getStatusMessage()
+            try:
+                jobStatus = aJob.getStatusMessage()
+            except:
+                jobStatus = 'Error getting job status'
             jobVm = aJob._vm._ipAddress
             jobOutputPath = aJob._outputPath
             

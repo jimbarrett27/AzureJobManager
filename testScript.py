@@ -23,6 +23,6 @@ for i,command in enumerate(commands):
 
 ajm = AzureJobManager('lbvSigmaAlphaCentral',20,jobs,verbose=True,sleepTime=300,htmlPath = '/home/jbarrett/www_html')
 
-ajm.run()
+try:
+    ajm.run()
 
-ajm.cleanUp()
