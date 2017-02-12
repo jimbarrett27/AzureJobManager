@@ -151,7 +151,11 @@ class AzureJobManager(object):
                 print "making do with the ones already launched"
                 self._virtualMachines = self._virtualMachines[:i]
                 break
-                
+            if not self._htmlPath == None:
+                try:
+                    self.updateHtml()
+                except:
+                    print "there was an error writing the HTML page"
             self._activeJobs.append(self._idleJobs[0])
             self._idleJobs[0].activate(vm)
             self._idleJobs = self._idleJobs[1:]
@@ -176,8 +180,10 @@ class AzureJobManager(object):
         """
 
         if not self._htmlPath == None:
-
-            self.updateHtml()
+            try:
+                self.updateHtml()
+            except:
+                print "there was an error writing the HTML page"
         
         remainingActiveJobs = []
         availableVms = []
