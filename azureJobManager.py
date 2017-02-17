@@ -207,8 +207,7 @@ class AzureJobManager(object):
             self.updateJobs()
             
             time.sleep(self._sleepTime)
-            
-            
+  
         self.cleanUp()
                 
     
@@ -293,6 +292,18 @@ class AzureJobManager(object):
     def updateHtml(self):
     
         runStatus = []
+        
+        for aJob in self._activeJobs:
+        
+            jobId = str(aJob._id)
+            try:
+                jobStatus = aJob.getStatusMessage()
+            except:
+                jobStatus = 'Error getting job status'
+            jobVm = aJob._vm._privateIpAddress
+            jobOutputPath = aJob._outputPath
+            
+            runStatus.append((jobId,jobStatus,jobVm,jobOutputPath))
     
         for iJob in self._idleJobs:
         
@@ -302,19 +313,7 @@ class AzureJobManager(object):
             jobOutputPath = iJob._outputPath
             
             runStatus.append((jobId,jobStatus,jobVm,jobOutputPath))
-    
-        for aJob in self._activeJobs:
-        
-            jobId = str(aJob._id)
-            try:
-                jobStatus = aJob.getStatusMessage()
-            except:
-                jobStatus = 'Error getting job status'
-            jobVm = aJob._vm._ipAddress
-            jobOutputPath = aJob._outputPath
-            
-            runStatus.append((jobId,jobStatus,jobVm,jobOutputPath))
-            
+
         for cJob in self._completedJobs:
             
             jobId =  str(cJob._id)
