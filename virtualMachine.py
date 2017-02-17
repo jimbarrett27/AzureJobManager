@@ -151,15 +151,16 @@ class VirtualMachine(object):
                     
         self.verbosePrint('sending a command with the command:\n' + fullCommand)
 
-        #output = sp.check_output(fullCommand,shell=True)
-        
+	output = 'n/a'
         if not waitToComplete:
-            sp.Popen(command,shell=True,stdin=None,stdout=None,stderr=None,close_fds=True)
+            sp.Popen([fullCommand],shell=True,stdin=None,stdout=None,stderr=None,close_fds=True)
         
+	else:
+	    output = sp.check_output(fullCommand,shell=True)
+
         self.verbosePrint('recieved the output:\n' + output)
         
         return output
-       
         
     def clean(self):
     

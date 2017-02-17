@@ -20,7 +20,7 @@ for i,command in enumerate(commands):
     j.initialise(i,command,dirname,'/home/jbarrett/AzureJobManager/COMPAS')
     jobs.append(j)
 
-ajm = AzureJobManager('anotherGrid',200,jobs,verbose=True,sleepTime=300,htmlPath = '/home/jbarrett/www_html')
+ajm = AzureJobManager('anotherGrid2',200,jobs,verbose=True,sleepTime=300,htmlPath = '/home/jbarrett/www_html')
 
 try:
     ajm.run()

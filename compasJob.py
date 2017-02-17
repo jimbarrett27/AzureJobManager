@@ -98,7 +98,7 @@ class CompasJob(AzureJob):
        
     def getStatusMessage(self):
     
-        op = self._vm.getOutputFromCommand('wc -l initialParameters.txt')
+        op = self._vm.sendCommand('wc -l initialParameters.txt',waitToComplete=True)
         
         nBinsSimulated = str(op.split(' ')[0])
         
