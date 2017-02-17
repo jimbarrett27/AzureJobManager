@@ -56,6 +56,14 @@ class AzureJobManager(object):
         return self._publicSSHKeyPath
         
     @property
+    def privateSSHKeyPath(self):
+        """The private SSH key to be given to the VM
+        
+        """
+        
+        return self._privateSSHKeyPath
+        
+    @property
     def nJobs(self):
         """The number of jobs initially submitted to the manager
         
@@ -80,12 +88,13 @@ class AzureJobManager(object):
         return self._htmlPath
         
 
-    def __init__(self, resourceGroupName, nVirtualMachines, jobs, sshKeyPath = '~/.ssh/id_rsa.pub', verbose = False, \
+    def __init__(self, resourceGroupName, nVirtualMachines, jobs, publicSshKeyPath = '~/.ssh/id_rsa.pub', privateSshKeyPath = '~/.ssh/id_rsa', verbose = False, \
                 sleepTime = 300, htmlPath = None):
     
         
         self._resourceGroupName = resourceGroupName
-        self._publicSSHKeyPath = sshKeyPath
+        self._publicSSHKeyPath = publicSshKeyPath
+        self._privateSSHKeyPath = privateSshKeyPath
         self._verbose = verbose
         self._sleepTime = sleepTime
         self._htmlPath = htmlPath
@@ -100,8 +109,7 @@ class AzureJobManager(object):
         if self._nJobs < nVirtualMachines:
             warnings.warn("requested more VMs than jobs, reducing the number of VMs")
             nVirtualMachines = self._nJobs
-            
-        
+      
         self.makeResourceGroup()
         
         self.constructVirtualMachines(nVirtualMachines)
@@ -127,7 +135,27 @@ class AzureJobManager(object):
         
             vmName = self._resourceGroupName + 'vm' + str(i)
             
-            vm = VirtualMachine(vmName, self._resourceGroupName, sshKeyPath = self._publicSSHKeyPath, \
+            vmOptions = {
+        
+                '--image' : 'UbuntuLTS',
+                '--admin-username' : 'ops',
+                '--ssh-key-value' : self._publicSSHKeyPath,
+                '--resource-group' : self._resourceGroupName,
+                '--location' : 'centralus',
+                '--name' : vmName,
+                '--size' : 'Basic_A0',
+                '--storage-sku' : 'Standard_LRS',
+                '--public-ip-address' : self._resourceGroupName + 'PublicIp',
+                '--vnet-name' : self._resourceGroupName + 'VNet',
+                '--nsg' : self._resourceGroupName + 'NSG',
+                '--subnet' : self._resourceGroupName + 'Subnet'
+            }
+            
+            if i>0:
+                vmOptions['--public-ip-address'] = "\"\""  
+#                vmOptions['--nsg'] = ""  
+            
+            vm = VirtualMachine(vmName, self._resourceGroupName, vmOptions, sshKeyPath = self._publicSSHKeyPath, \
                                 verbose = self._verbose)
                                 
             self._virtualMachines.append(vm)
@@ -141,11 +169,21 @@ class AzureJobManager(object):
         assert self._nJobs == len(self._idleJobs)
         assert self._nJobs >= len(self._virtualMachines)
         
+        headNodeIp = None
+        
         #initally launch the virtual machines, putting one job on each of them
         for i,vm in enumerate(self._virtualMachines):
             
             try:
-                vm.launch()
+                vm.launch(headNodeIp)
+                if i == 0:
+                    command = 'scp -o  StrictHostKeyChecking=no ' + self._publicSSHKeyPath + ' ops@' + vm._publicIpAddress + ':.ssh/.'
+                    sp.call(command,shell=True)
+                    command = 'scp -o  StrictHostKeyChecking=no ' + self._privateSSHKeyPath + ' ops@' + vm._publicIpAddress + ':.ssh/.'
+                    sp.call(command,shell=True)
+                    
+                    headNodeIp = vm._publicIpAddress
+                    
             except:
                 print "there was an error launching one of the VMs. we may have hit a usage limit..."
                 print "making do with the ones already launched"
@@ -159,6 +197,7 @@ class AzureJobManager(object):
             self._activeJobs.append(self._idleJobs[0])
             self._idleJobs[0].activate(vm)
             self._idleJobs = self._idleJobs[1:]
+           
             
         #wait before starting the checking loop
         time.sleep(self._sleepTime)
@@ -201,6 +240,11 @@ class AzureJobManager(object):
                 remainingActiveJobs.append(jobToCheck)
                 
         self._activeJobs = remainingActiveJobs
+
+        if len(availableVms) > len(self._idleJobs):
+            while len(availableVms) > len(self._idleJobs):
+                availableVms[0].delete()
+                availableVms = availableVms[1:]
 
         for vm in availableVms:
         

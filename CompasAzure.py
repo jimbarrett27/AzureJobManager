@@ -2,8 +2,8 @@ import numpy as np
 import itertools
 import os
 
-nBinariesPerGridPoint = 20000
-nBinariesPerTask = 5000
+nBinariesPerGridPoint = 100000
+nBinariesPerTask = 100000
 
 assert nBinariesPerTask <= nBinariesPerGridPoint
 assert nBinariesPerGridPoint % nBinariesPerTask == 0
@@ -11,11 +11,11 @@ assert nBinariesPerGridPoint % nBinariesPerTask == 0
 nTasksPerGridPoint = nBinariesPerGridPoint/nBinariesPerTask
 
 gridDictionary = {}
-gridDictionary['--common-envelope-alpha'] = np.linspace(0.7,2.,7)
-gridDictionary['--luminous-blue-variable-multiplier'] = np.linspace(1.,2.,7)
-gridDictionary['--kick-velocity-sigma'] = np.linspace(200,300,7)
+gridDictionary['--common-envelope-alpha'] = np.linspace(0.1,3.,7)
+gridDictionary['--luminous-blue-variable-multiplier'] = np.linspace(2.,8.,7)
+gridDictionary['--kick-velocity-sigma'] = np.linspace(0.,200.,7)
 
-initialSeed = 1234567
+initialSeed = 628562378
 np.random.seed(initialSeed)
 
 shareSeeds = False

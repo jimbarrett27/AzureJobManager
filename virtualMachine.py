@@ -12,11 +12,18 @@ class VirtualMachine(object):
     """
 
     @property
-    def ipAddress(self):
-        """The IP address of the associated VM
+    def privateIpAddress(self):
+        """The private IP address of the associated VM
         
         """
-        return self._ipAddress
+        return self._privateIpAddress
+        
+    @property
+    def publicIpAddress(self):
+        """The public IP address of the cluster
+        
+        """
+        return self._publicIpAddress
       
     @property  
     def publicSSHKeyPath(self):
@@ -58,16 +65,16 @@ class VirtualMachine(object):
         """
         
         return self._resourceGroup
-            
-    
-    def getSSHAddress(self):
-        """Convenience method to return a string of the form user@ipaddress
+        
+    @property
+    def headNode(self):
+        """The head node for this cluster
         
         """
-    
-        return self._vmOptions['--admin-username'] + '@' + self._ipAddress
+        
+        return self._headNode
 
-    def __init__(self, name, resourceGroup, sshKeyPath = '~/.ssh/id_rsa.pub', verbose = False):
+    def __init__(self, name, resourceGroup, vmOptions, sshKeyPath = '~/.ssh/id_rsa.pub', verbose = False, publicIp = None):
     
         self._name = name
         self._resourceGroup = resourceGroup
@@ -75,33 +82,19 @@ class VirtualMachine(object):
         
         self._publicSSHKeyPath = sshKeyPath
         
-        self._vmOptions = {
+        self._vmOptions = vmOptions
+       
+        self._publicIpAddress = publicIp
         
-            '--image' : 'UbuntuLTS',
-            '--admin-username' : 'ops',
-            '--ssh-key-value' : self._publicSSHKeyPath,
-            '--resource-group' : self._resourceGroup,
-            '--location' : 'centralus',
-            '--name' : self._name,
-            '--size' : 'Basic_A0',
-            '--storage-sku' : 'Standard_LRS'
-        
-        }
-    
-    def launch(self):
+    def launch(self,headNodeIp = None):
         """Launches the VM and parses the returned info
         
         """
-        
-        self.verbosePrint('now launching VM with name' + self._name)
         
         try:
             command = 'az vm create '
             for key in self.vmOptions.keys():
                 command += key + ' ' + self._vmOptions[key] + ' '
-                
-            self.verbosePrint('now launching VM with the command;')
-            self.verbosePrint(command)
                 
             vmDetails = sp.check_output(command,shell=True)
             vmDetails = vmDetails.split('\n')
@@ -109,54 +102,63 @@ class VirtualMachine(object):
         except sp.CalledProcessError:
             
             raise VirtualMachineException('There was an error generating the virtual machine with name ' + self.name)
-        
-        self.verbosePrint('VM launched with name' + self.name)
+
         
         for line in vmDetails:
-            if not 'publicIpAddress' in line:
-                continue
-            else:
+            if 'privateIpAddress' in line:
                 s = line.split('"')
-                self._ipAddress = s[3]
-                break
+                self._privateIpAddress = s[3]
+        
+        if headNodeIp == None:
+            for line in vmDetails:
+                if 'publicIpAddress' in line:
+                    s = line.split('"')
+                    self._publicIpAddress = s[3]
+        else:
+            self._publicIpAddress = headNodeIp
                 
-        self.verbosePrint('found public IP address: ' + self.ipAddress)
+        self.verbosePrint('found private IP address: ' + self._privateIpAddress)
+        self.verbosePrint('found public IP address: ' + self._publicIpAddress)
         
     def uploadFile(self,filePath, remoteDestination='.'):
     
-        command = 'scp -o \'StrictHostKeyChecking no\' ' + filePath + ' ' + self.getSSHAddress() + ':' + remoteDestination
-        
-        self.verbosePrint('copying file with command ' + command)
+        command = 'scp -o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no ' + \
+                    self._vmOptions['--admin-username'] + '@' + self._publicIpAddress + '" ' + filePath + ' ' + \
+                    self._vmOptions['--admin-username'] + '@' + self._privateIpAddress + ':' + remoteDestination
+                 
+        self.verbosePrint("uploading file with command:\n" + command)
         
         sp.call(command,shell=True)
         
     def getFile(self,remotePath, localDestination = '.'):
     
-        command = 'scp -o \'StrictHostKeyChecking no\' ' + self.getSSHAddress() + ':' + remotePath + ' ' + localDestination
-        
-        self.verbosePrint('copying file with command ' + command)
+        command = 'scp -o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no ' + \
+                    self._vmOptions['--admin-username'] + '@' + self._publicIpAddress + '" ' + \
+                    self._vmOptions['--admin-username'] + '@' + self._privateIpAddress + ':' + remotePath + ' ' + \
+                    localDestination
+                   
+        self.verbosePrint("downloading file with command:\n" + command)
         
         sp.call(command, shell=True)
         
     def sendCommand(self,command,waitToComplete=True):
     
-        fullCommand = "ssh -o \'StrictHostKeyChecking no\' " + self.getSSHAddress() + " \'" + command + "\'"
-#        fullCommand = ["ssh", "-o","\'StrictHostKeyChecking no\'", self.getSSHAddress(),"\'" + command + "\'"]
         
-        self.verbosePrint('sending command via the full command ')
-        self.verbosePrint(fullCommand)
+        fullCommand = 'ssh ' + self._vmOptions['--admin-username'] + '@' + self._privateIpAddress + ' -o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no '\
+                    + self._vmOptions['--admin-username'] + '@' + self._publicIpAddress + '" '\
+                    + '\'' + command + '\''
+                    
+        if not waitToComplete:
+            fullCommand += '&'
+                    
+        self.verbosePrint('sending a command with the command:\n' + fullCommand)
+
+        output = sp.check_output(fullCommand,shell=True)
         
-        p = sp.Popen(fullCommand,stdin=None, stdout=None, stderr=None, close_fds=True,shell=True)
-        if waitToComplete:
-            p.wait()
-            
-        print "completed..."
+        self.verbosePrint('recieved the output:\n' + output)
         
-    def getOutputFromCommand(self,command):
-    
-        fullCommand = "ssh -o \'StrictHostKeyChecking no\' " + self.getSSHAddress() + " \'" + command + "\'"
-        
-        return sp.check_output(fullCommand,shell=True)
+        return output
+       
         
     def clean(self):
     
@@ -171,6 +173,12 @@ class VirtualMachine(object):
          
         if self._verbose:
             print message
+            
+    def delete(self):
+    
+        command = 'az vm delete --force --name ' + self._name + ' --resource-group ' + self._resourceGroup
+        
+        sp.call(command,shell=True)
         
         
         
