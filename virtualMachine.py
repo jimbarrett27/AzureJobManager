@@ -148,12 +148,13 @@ class VirtualMachine(object):
                     + self._vmOptions['--admin-username'] + '@' + self._publicIpAddress + '" '\
                     + '\'' + command + '\''
                     
-        if not waitToComplete:
-            fullCommand += '&'
                     
         self.verbosePrint('sending a command with the command:\n' + fullCommand)
 
         output = sp.check_output(fullCommand,shell=True)
+        
+        if not waitToComplete:
+            sp.Popen(command,shell=True,stdin=None,stdout=None,stderr=None,close_fds=True)
         
         self.verbosePrint('recieved the output:\n' + output)
         
